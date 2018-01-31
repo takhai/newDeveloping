@@ -6,14 +6,17 @@ import (
 	"text/template"
 )
 
-type person struct {
-	Name string
-	Age  int
+type course struct {
+	Number, Name, Units string
 }
 
-type musician struct {
-	person
-	LicenseToPlay bool
+type semester struct {
+	Term    string
+	Courses []course
+}
+
+type year struct {
+	Fall, Spring, Summer semester
 }
 
 var tpl *template.Template
@@ -24,15 +27,26 @@ func init() {
 
 func main() {
 
-	p1 := musician{
-		person{
-			Name: "Ray Charles",
-			Age:  56,
+	y := year{
+		Fall: semester{
+			Term: "Fall",
+			Courses: []course{
+				course{"DT-01", "Introduction", "100"},
+				course{"DT-02", "Bit to Hashgraph", "200"},
+				course{"DT-03", "Hashgraph to GhostMap", "300"},
+			},
 		},
-		true,
+		Spring: semester{
+			Term: "Spring",
+			Courses: []course{
+				course{"DT-04", "Ai and EI", "075"},
+				course{"DT-05", "Space VS Virtual Space", "145"},
+				course{"DT-06", "LLC neurospeed tracking", "345"},
+			},
+		},
 	}
 
-	err := tpl.Execute(os.Stdout, p1)
+	err := tpl.Execute(os.Stdout, y)
 	if err != nil {
 		log.Fatalln(err)
 	}

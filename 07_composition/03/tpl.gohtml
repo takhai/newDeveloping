@@ -6,13 +6,13 @@
 </head>
 <body>
 
-{{.Fall .Term}}<br>
+{{.Fall.Term}}<br>
 {{range .Fall.Courses}}
 {{.Number}} - {{.Name}} - {{.Units}}<br>
 {{end}}
 
 
-{{.Spring .Term}}<br>
+{{.Spring.Term}}<br>
 {{range .Spring.Courses}}
 {{.Number}} - {{.Name}} - {{.Units}}<br>
 {{end}}
