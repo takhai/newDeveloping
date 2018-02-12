@@ -60,10 +60,9 @@ func foo(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		w.Header().Set("Content-Type", "text/html; charset=itf-8")
-		tpl.ExecuteTemplate(w, "index.gohtml", s)
-
 	}
+	w.Header().Set("Content-Type", "text/html; charset=itf-8")
+	tpl.ExecuteTemplate(w, "index.gohtml", s)
 
 }
 
