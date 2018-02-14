@@ -11,23 +11,15 @@ func init() {
 	tpl = template.Must(template.ParseGlob("templates/*"))
 }
 
-type person struct {
-	FirstName  string
-	LastName   string
-	Subscribed bool
-}
-
 func main() {
 	http.HandleFunc("/", foo)
 	http.Handle("/favi.ico", http.NotFoundHandler())
 	http.ListenAndServe(":8080", nil)
+
 }
 
-func foo(w http.ResponseWriter, req *http.Request) { //fix
+func foo(w http.ResponseWriter, r *http.Request) {
 
-	f := req.FormValue("first")
-	//l := req.FormValue("last")
-	//s := req.FormValue("subscribe") == "on"
+	tpl.ExecuteTemplate(w, "index.gohtml", nil)
 
-	tpl.ExecuteTemplate(w, "index.gohtml", f)
 }
