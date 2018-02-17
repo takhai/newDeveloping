@@ -2,13 +2,14 @@ package main
 
 import (
 	"github.com/satori/go.uuid"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"net/http"
 )
 
 type user struct {
 	UserName string
-	Password string
+	Password []byte
 	First    string
 	Last     string
 }
@@ -50,6 +51,8 @@ func signup(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	var u user
+
 	//process form submission
 	if req.Method == http.MethodPost {
 
@@ -68,24 +71,28 @@ func signup(w http.ResponseWriter, req *http.Request) {
 		//create session
 		sID := uuid.Must(uuid.NewV4())
 		c := &http.Cookie{
-			Name:   "session",
-			Value:  sID.String(),
-			Secure: true,
-			//	HttpOnly: true,
+			Name:  "session",
+			Value: sID.String(),
+			//Secure: true,
+			HttpOnly: true,
 		}
 
 		http.SetCookie(w, c)
 		dbSessions[c.Value] = un
 
 		//store user in dbUsers
-		u := user{un, p, f, l}
+		bs, err := bcrypt.GenerateFromPassword([]byte(p), bcrypt.MinCost)
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
+		u := user{un, bs, f, l}
 		dbUsers[un] = u
 
 		//redirect
 		http.Redirect(w, req, "/", http.StatusSeeOther)
 		return
 	}
-
-	tpl.ExecuteTemplate(w, "signup.gohtml", nil)
+	tpl.ExecuteTemplate(w, "signup.gohtml", u)
 
 }
